@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Dashboard · Donut Things Café</title>
+<link rel="icon" href="/img/favicon.png">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#F2F7F7;color:#1F1108;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#1F1108;color:#fff;padding:12px 18px;display:flex;align-items:center;gap:12px}header img{width:42px;height:42px}header b{flex:1}header a{color:#fff}
+nav{display:flex;gap:6px;padding:12px 18px 0;flex-wrap:wrap}nav button{padding:10px 16px;border:2px solid #1F1108;background:#fff;border-radius:8px;font-weight:700;cursor:pointer;font-size:15px;color:#1F1108}nav button.on{background:#EE5F7E}
+main{max-width:980px;margin:0 auto;padding:16px 18px 60px}section{display:none}section.on{display:block}
+.card{background:#fff;border:1px solid #d7e0e0;border-radius:10px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 4px;font-size:17px}.meta{color:#5b5047;font-size:14px}.line{margin:3px 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+input,select,textarea{font:inherit;padding:9px;border:1px solid #9aa;border-radius:6px;background:#fff;color:#1F1108;max-width:100%}textarea{width:100%}
+.btn{padding:9px 14px;border:0;border-radius:6px;background:#1F1108;color:#fff;font-weight:700;cursor:pointer;font-size:15px;text-decoration:none;display:inline-block}.btn.alt{background:#EE5F7E;color:#1F1108}.btn.del{background:#fff;color:#A3142F;border:2px solid #A3142F}.btn.sm{padding:6px 10px;font-size:14px}
+.fl{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:8px}.fl label{font-size:14px;font-weight:600}.fl input,.fl select{width:100%;margin-top:3px}
+.out{display:flex;align-items:center;gap:6px;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}.stat{background:#fff;border:1px solid #d7e0e0;border-radius:10px;padding:12px}.stat b{display:block;font-size:26px}
+.hint{color:#5b5047;font-size:14px;margin:4px 0 12px}.ok{color:#14704a;font-weight:700;margin-left:6px}.err{color:#A3142F;font-weight:700}
+.empty{padding:26px;text-align:center;color:#5b5047;background:#fff;border-radius:10px}
+.bad{background:#FFF3C9;padding:2px 8px;border-radius:4px;font-size:13px;font-weight:700;margin-left:6px}
+@media(max-width:640px){.fl{grid-template-columns:1fr}}
+</style></head><body>
+<header><img src="/img/logo-sm.webp" alt=""><b>Donut Things Café</b><a href="/" target="_blank" rel="noopener">View site</a><a href="/admin/logout">Sign out</a></header>
+<nav>
+<button data-t="boxes" class="on">Box requests</button>
+<button data-t="flavors">Flavors</button>
+<button data-t="info">Hours &amp; info</button>
+<button data-t="traffic">Traffic</button>
+</nav>
+<main>
+<section id="boxes" class="on"><div id="leadList"></div></section>
+
+<section id="flavors">
+<p class="hint">Mark a flavor sold out and it shows that way on the site right away. Use the arrows to change the order.</p>
+<div id="flList"></div>
+<div class="card"><h3>Add a flavor</h3>
+<div class="fl"><label>Name<input id="nName"></label><label>Short description<input id="nBlurb" maxlength="140"></label><label>Donut drawing<select id="nGlaze"></select></label></div>
+<div class="acts"><button class="btn alt" id="nAdd">Add flavor</button><span id="nMsg"></span></div></div>
+</section>
+
+<section id="info"><div class="card">
+<h3>Hours</h3><p class="hint">One line per day, like <b>Mon–Fri: 7am–2pm</b>. Leave blank to point people to your Facebook page.</p>
+<textarea id="sHours" rows="7"></textarea>
+<h3 style="margin-top:14px">Banner at the top of the site</h3><p class="hint">Good for “Sold out for today” or “Closed Monday.” Leave blank to hide it.</p>
+<input id="sNotice" maxlength="160" style="width:100%">
+<h3 style="margin-top:14px">Instagram link</h3><p class="hint">Paste your full link and the icon appears on the site.</p>
+<input id="sIg" style="width:100%" placeholder="https://www.instagram.com/yourshop">
+<div class="acts"><button class="btn alt" id="sSave">Save changes</button><span id="sMsg"></span></div>
+</div></section>
+
+<section id="traffic"><div class="acts" style="margin:0 0 12px"><select id="range"><option value="d7">Last 7 days</option><option value="d30" selected>Last 30 days</option><option value="d90">Last 90 days</option></select></div><div id="stats"></div></section>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+function api(p,o){o=o||{};if(o.body){o.headers={'Content-Type':'application/json'};o.body=JSON.stringify(o.body)}return fetch('/admin/api'+p,o).then(function(r){if(r.status===401){location.reload();throw new Error('auth')}return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Save failed');return j})})}
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){document.querySelectorAll('nav button,section').forEach(function(e){e.classList.remove('on')});b.classList.add('on');$(b.dataset.t).classList.add('on');if(b.dataset.t==='traffic')stats()}});
+
+var glazes=[];
+function leads(){api('/leads').then(function(d){var L=$('leadList');if(!d.leads.length){L.innerHTML='<div class="empty">No box requests yet. New ones land here.</div>';return}
+L.innerHTML=d.leads.map(function(l){var tel=String(l.phone).replace(/[^\d+]/g,'');return '<div class="card" data-id="'+l.id+'"><h3>'+esc(l.name)+(l.status==='new'?'<span class="bad">New</span>':'')+'</h3>'+
+'<p class="meta">Sent '+esc(l.created_at)+' UTC</p>'+
+'<p class="line"><b>Pickup:</b> '+esc([l.pickup_date,l.pickup_time].filter(Boolean).join(', '))+'</p>'+
+'<p class="line"><b>How many:</b> '+esc(l.quantity)+(l.occasion?' ('+esc(l.occasion)+')':'')+'</p>'+
+(l.flavors?'<p class="line"><b>Flavors:</b> '+esc(l.flavors)+'</p>':'')+
+(l.details?'<p class="line"><b>Notes:</b> '+esc(l.details)+'</p>':'')+
+'<p class="line"><a href="tel:'+esc(tel)+'">'+esc(l.phone)+'</a>'+(l.email?' · <a href="mailto:'+esc(l.email)+'">'+esc(l.email)+'</a>':'')+'</p>'+
+'<div class="acts"><select class="st">'+d.statuses.map(function(s){return '<option'+(s===l.status?' selected':'')+'>'+s+'</option>'}).join('')+'</select>'+
+'<input class="nt" placeholder="Your notes" value="'+esc(l.notes)+'" style="flex:1;min-width:160px"><button class="btn del sm rm">Delete</button></div></div>'}).join('');
+L.querySelectorAll('.card').forEach(function(c){var id=c.dataset.id;
+c.querySelector('.st').onchange=function(){api('/leads/'+id,{method:'PATCH',body:{status:this.value}}).then(leads)};
+c.querySelector('.nt').onchange=function(){api('/leads/'+id,{method:'PATCH',body:{notes:this.value}})};
+c.querySelector('.rm').onclick=function(){if(confirm('Delete this request? This can’t be undone.'))api('/leads/'+id,{method:'DELETE'}).then(leads)}})})}
+
+function glazeOpts(v){return glazes.map(function(g){return '<option value="'+g.key+'"'+(g.key===v?' selected':'')+'>'+esc(g.label)+'</option>'}).join('')}
+var flIds=[];
+function fl(){api('/flavors').then(function(d){glazes=d.glazes;$('nGlaze').innerHTML=glazeOpts('pink');flIds=d.flavors.map(function(f){return f.id});
+$('flList').innerHTML=d.flavors.map(function(f,i){return '<div class="card" data-id="'+f.id+'"><div class="fl"><label>Name<input class="n" value="'+esc(f.name)+'"></label><label>Short description<input class="b" maxlength="140" value="'+esc(f.blurb)+'"></label><label>Donut drawing<select class="g">'+glazeOpts(f.glaze)+'</select></label></div>'+
+'<div class="acts"><label class="out"><input type="checkbox" class="o"'+(f.sold_out?' checked':'')+'> Sold out today</label><button class="btn sm save">Save</button><button class="btn sm up" aria-label="Move up"'+(i?'':' disabled')+'>↑</button><button class="btn sm dn" aria-label="Move down"'+(i<d.flavors.length-1?'':' disabled')+'>↓</button><button class="btn del sm rm">Delete</button><span class="msg"></span></div></div>'}).join('');
+document.querySelectorAll('#flList .card').forEach(function(c){var id=c.dataset.id,get=function(){return{name:c.querySelector('.n').value,blurb:c.querySelector('.b').value,glaze:c.querySelector('.g').value,sold_out:c.querySelector('.o').checked}},save=function(){return api('/flavors/'+id,{method:'PUT',body:get()}).then(function(){c.querySelector('.msg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){c.querySelector('.msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+c.querySelector('.save').onclick=save;c.querySelector('.o').onchange=save;
+c.querySelector('.rm').onclick=function(){if(confirm('Delete this flavor?'))api('/flavors/'+id,{method:'DELETE'}).then(fl)};
+function move(dir){var i=flIds.indexOf(+id),j=i+dir,t=flIds[i];flIds[i]=flIds[j];flIds[j]=t;api('/flavors/order',{method:'POST',body:{ids:flIds}}).then(fl)}
+c.querySelector('.up').onclick=function(){move(-1)};c.querySelector('.dn').onclick=function(){move(1)}})})}
+$('nAdd').onclick=function(){api('/flavors',{method:'POST',body:{name:$('nName').value,blurb:$('nBlurb').value,glaze:$('nGlaze').value}}).then(function(){$('nName').value='';$('nBlurb').value='';$('nMsg').innerHTML='<span class="ok">Added</span>';fl()}).catch(function(e){$('nMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+
+function info(){api('/settings').then(function(s){$('sHours').value=s.hours||'';$('sNotice').value=s.notice||'';$('sIg').value=s.instagram_url||''})}
+$('sSave').onclick=function(){api('/settings',{method:'PUT',body:{hours:$('sHours').value,notice:$('sNotice').value,instagram_url:$('sIg').value}}).then(function(){$('sMsg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){$('sMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+
+var S=null;function stats(){api('/stats').then(function(d){S=d;draw()})}
+function draw(){if(!S)return;var s=S[$('range').value];var row=function(a,k){return a.length?a.map(function(x){return '<div class="line">'+esc(x[k])+': <b>'+x.n+'</b></div>'}).join(''):'<div class="meta">No data yet</div>'};
+$('stats').innerHTML='<div class="stats">'+[['Visitors',s.visitors],['Page views',s.views],['Box requests',s.leads],['Call taps',s.calls],['Directions taps',s.directions]].map(function(p){return '<div class="stat"><b>'+p[1]+'</b>'+p[0]+'</div>'}).join('')+'</div><div class="card"><h3>Where visitors came from</h3>'+row(s.sources,'source')+'</div><div class="card"><h3>Devices</h3>'+row(s.devices,'device')+'</div>'}
+$('range').onchange=draw;
+leads();fl();info();
+})();
+</script></body></html>
