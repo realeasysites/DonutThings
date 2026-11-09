@@ -1,6 +1,6 @@
 // Donut Things entrance film. Plays once per visitor; add ?intro=1 to any URL to replay.
 (function () {
-  var KEY = 'dt-intro-seen';
+  var KEY = 'dt-intro-seen-v2';
   var force = /[?&]intro=1\b/.test(location.search);
   var seen = false;
   try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
@@ -70,5 +70,5 @@
   var started = false;
   video.addEventListener('playing', function () { started = true; });
   setTimeout(function () { if (!started) finish(); }, 4000);
-  setTimeout(finish, 12000);
+  setTimeout(finish, 10000);
 })();

@@ -1,10 +1,8 @@
-.dt-intro { position: fixed; inset: 0; z-index: 9999; background: #000; opacity: 1; transition: opacity .5s ease; }
+.dt-intro { position: fixed; inset: 0; z-index: 9999; background: #fff; display: grid; place-items: center; opacity: 1; transition: opacity .5s ease; }
 .dt-intro.is-done { opacity: 0; pointer-events: none; }
-.dt-intro video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.dt-intro-btn { position: absolute; bottom: max(20px, env(safe-area-inset-bottom)); padding: 11px 18px; font: 600 16px/1 system-ui, sans-serif; color: #fff; background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.65); border-radius: 999px; cursor: pointer; }
-.dt-intro-btn:hover, .dt-intro-btn:focus-visible { background: #fff; color: #000; }
+.dt-intro video { width: min(92vw, 86vh); height: auto; aspect-ratio: 1; display: block; }
+.dt-intro-btn { position: absolute; bottom: max(20px, env(safe-area-inset-bottom)); padding: 11px 18px; font: 600 16px/1 system-ui, sans-serif; color: #1F1108; background: #fff; border: 2px solid #1F1108; border-radius: 999px; cursor: pointer; }
+.dt-intro-btn:hover, .dt-intro-btn:focus-visible { background: #1F1108; color: #fff; }
 .dt-intro-skip { right: 20px; }
 .dt-intro-sound { left: 20px; }
 html.dt-intro-open { overflow: hidden; }
-/* Phones held upright: show the whole 16:9 film instead of cropping the logo. */
-@media (max-aspect-ratio: 1/1) { .dt-intro video { object-fit: contain; } }
