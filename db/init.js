@@ -62,12 +62,15 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
   const add = db.prepare('INSERT INTO flavors (name, blurb, glaze, sort) VALUES (?,?,?,?)');
   [
     ['Biscoff Dragon', 'Fluffy and golden, loaded with buttery Biscoff crunch.', 'sugar'],
-    ['Yuzu Honey', 'Bright Japanese citrus with honey.', 'yuzu'],
-    ['Mango Tajín', 'Sweet mango with a chili-lime kick.', 'mango'],
-    ['Banana Turon', 'Inspired by the Filipino fried banana roll.', 'turon'],
-    ['Coconut Pandan', 'Coconut with fragrant Southeast Asian pandan.', 'pandan'],
-    ['Matcha Oreo', 'Earthy matcha meets cookies and cream.', 'oreo'],
     ['Matcha Maple Bacon', 'Sweet, smoky and a little bit green.', 'bacon'],
+    ['Matcha Oreo', 'Earthy matcha meets cookies and cream.', 'oreo'],
+    ['Coconut Pandan', 'Coconut with fragrant Southeast Asian pandan.', 'pandan'],
+    ['Mango Tajín', 'Sweet mango with a chili-lime kick.', 'mango'],
+    ['Yuzu Honey', 'Bright Japanese citrus with honey.', 'yuzu'],
+    ['Banana Turon', 'Inspired by the Filipino fried banana roll.', 'turon'],
+    ['Classic Glazed', 'The one everybody needs in the box.', 'sugar'],
+    ['Chocolate Frosted', 'Thick chocolate frosting on a fluffy ring.', 'chocolate'],
+    ['Glazed Donut Holes', 'Bite-size and easy to share.', 'sugar'],
   ].forEach((f, i) => add.run(f[0], f[1], f[2], i));
 }
 
