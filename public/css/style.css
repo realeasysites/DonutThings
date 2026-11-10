@@ -1,5 +1,5 @@
 :root{
-  --glaze:#EE5F7E; --teal:#1FA1A8; --ink:#1F1108; --dough:#DFA45A; --sun:#F4C542;
+  --glaze:#EE5F7E; --teal:#1FA1A8; --ink:#1F1108; --dough:#DFA45A;
   --white:#fff; --mist:#E8F6F6; --matcha:#86AC55; --body:'Zen Maru Gothic',system-ui,sans-serif; --display:'Dela Gothic One','Zen Maru Gothic',sans-serif;
 }
 *{box-sizing:border-box}
@@ -137,7 +137,7 @@ form .btn{justify-self:start;font-size:1.05rem}
 .form-msg.err{color:#A3142F}
 
 /* visit */
-.visit{background:var(--sun);padding:84px 0}
+.visit{background:var(--teal);padding:84px 0}
 .visit-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:44px;align-items:stretch}
 .visit address{font-style:normal;font-size:1.3rem;font-weight:900;margin:16px 0 14px;line-height:1.35}
 .hours{margin-bottom:6px;max-width:320px}
@@ -197,14 +197,13 @@ form .btn{justify-self:start;font-size:1.05rem}
 .gallery figure:only-child{flex-basis:min(100%,560px)}
 .gallery figure:only-child img{aspect-ratio:1}
 
-/* instagram */
-.ig{background:var(--mist);padding:84px 0}
-.ig-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap}
-.ig-handle{font-weight:900;color:var(--teal);margin-bottom:4px}
-.ig-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.ig-grid a{display:block;background:var(--white);border-radius:10px;aspect-ratio:1;padding:8%;transition:transform .15s}
-.ig-grid a:hover{transform:translateY(-3px)}
-.ig-grid img{width:100%;height:100%;object-fit:contain}
-.ig-feed{min-height:200px}
-@media (max-width:860px){.ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ig{padding:60px 0}}
-@media (prefers-reduced-motion:reduce){.ig-grid a{transition:none}}
+/* facebook feed */
+.feed{background:var(--mist);padding:84px 0}
+.feed-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,500px);gap:48px;align-items:center}
+.feed-copy p{font-size:1.15rem;max-width:30em;margin:16px 0 26px}
+.feed-btns{display:flex;gap:12px;flex-wrap:wrap}
+.fb-card{background:var(--white);border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:0 6px 0 var(--ink)}
+.fb-embed{min-height:620px;display:grid;place-items:center;background:var(--white)}
+.fb-embed iframe{width:100%;height:620px;border:0}
+.fb-fallback{font-weight:900;padding:24px;text-align:center}
+@media (max-width:860px){.feed{padding:60px 0}.feed-grid{grid-template-columns:1fr;gap:28px}.fb-embed,.fb-embed iframe{min-height:520px;height:520px}}

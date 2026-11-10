@@ -7,7 +7,7 @@ const { GLAZES } = require('../lib/render');
 
 const router = express.Router();
 const STATUSES = ['new', 'confirmed', 'picked up', 'not a lead'];
-const SETTINGS = ['hours', 'notice', 'instagram_url', 'instagram_feed'];
+const SETTINGS = ['hours', 'notice', 'instagram_url'];
 
 const fails = new Map(); // simple login throttle per IP
 function throttled(ip) {
@@ -127,13 +127,10 @@ api.put('/settings', (req, res) => {
   const b = req.body || {};
   const ig = String(b.instagram_url || '').trim();
   if (ig && !/^https:\/\/(www\.)?instagram\.com\//i.test(ig)) return res.status(400).json({ error: 'Use a full Instagram link, like https://www.instagram.com/yourshop' });
-  const feed = String(b.instagram_feed || '').trim();
-  if (feed && !/^[A-Za-z0-9_-]{8,40}$/.test(feed)) return res.status(400).json({ error: 'That doesn’t look like a Behold feed ID. Copy just the ID, like L7mnQCHvZeMZLbNXmJll' });
   const up = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');
   up.run('hours', String(b.hours || '').slice(0, 800));
   up.run('notice', String(b.notice || '').trim().slice(0, 160));
   up.run('instagram_url', ig.slice(0, 200));
-  up.run('instagram_feed', feed);
   res.json({ ok: true });
 });
 

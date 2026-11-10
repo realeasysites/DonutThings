@@ -47,8 +47,6 @@ input,select,textarea{font:inherit;padding:9px;border:1px solid #9aa;border-radi
 <input id="sNotice" maxlength="160" style="width:100%">
 <h3 style="margin-top:14px">Instagram link</h3><p class="hint">Already linked to @donutthingscafe. Only change this if your Instagram moves.</p>
 <input id="sIg" style="width:100%" placeholder="https://www.instagram.com/yourshop">
-<h3 style="margin-top:14px">Instagram feed on the site</h3><p class="hint">Paste your Behold feed ID to show your latest posts on the homepage. Leave blank to show your flavor photos instead.</p>
-<input id="sFeed" style="width:100%" placeholder="e.g. L7mnQCHvZeMZLbNXmJll">
 <div class="acts"><button class="btn alt" id="sSave">Save changes</button><span id="sMsg"></span></div>
 </div></section>
 
@@ -89,8 +87,8 @@ function move(dir){var i=flIds.indexOf(+id),j=i+dir,t=flIds[i];flIds[i]=flIds[j]
 c.querySelector('.up').onclick=function(){move(-1)};c.querySelector('.dn').onclick=function(){move(1)}})})}
 $('nAdd').onclick=function(){api('/flavors',{method:'POST',body:{name:$('nName').value,blurb:$('nBlurb').value,glaze:$('nGlaze').value}}).then(function(){$('nName').value='';$('nBlurb').value='';$('nMsg').innerHTML='<span class="ok">Added</span>';fl()}).catch(function(e){$('nMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
 
-function info(){api('/settings').then(function(s){$('sHours').value=s.hours||'';$('sNotice').value=s.notice||'';$('sIg').value=s.instagram_url||'';$('sFeed').value=s.instagram_feed||''})}
-$('sSave').onclick=function(){api('/settings',{method:'PUT',body:{hours:$('sHours').value,notice:$('sNotice').value,instagram_url:$('sIg').value,instagram_feed:$('sFeed').value}}).then(function(){$('sMsg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){$('sMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+function info(){api('/settings').then(function(s){$('sHours').value=s.hours||'';$('sNotice').value=s.notice||'';$('sIg').value=s.instagram_url||''})}
+$('sSave').onclick=function(){api('/settings',{method:'PUT',body:{hours:$('sHours').value,notice:$('sNotice').value,instagram_url:$('sIg').value}}).then(function(){$('sMsg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){$('sMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
 
 var S=null;function stats(){api('/stats').then(function(d){S=d;draw()})}
 function draw(){if(!S)return;var s=S[$('range').value];var row=function(a,k){return a.length?a.map(function(x){return '<div class="line">'+esc(x[k])+': <b>'+x.n+'</b></div>'}).join(''):'<div class="meta">No data yet</div>'};
