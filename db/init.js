@@ -77,4 +77,8 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
   ].forEach((f, i) => add.run(f[0], f[1], f[2], i));
 }
 
+// Default hours, given by the owner Nov 2026. INSERT OR IGNORE never overwrites
+// hours that were already saved in the dashboard.
+db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)').run('hours', 'Mon–Sat: 8am–2pm\nSunday: Closed');
+
 module.exports = db;
