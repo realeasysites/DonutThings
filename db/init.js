@@ -68,7 +68,9 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
     ['Mango Tajín', 'Sweet mango with a chili-lime kick.', 'mango'],
     ['Yuzu Honey', 'Bright Japanese citrus with honey.', 'yuzu'],
     ['Banana Turon', 'Inspired by the Filipino fried banana roll.', 'turon'],
+    ['Vanilla Jasmine', 'Vanilla bean glaze with floral jasmine.', 'vanilla'],
     ['Classic Glazed', 'The one everybody needs in the box.', 'sugar'],
+    ['Classic Glazed Twist', 'A twisted take on the classic glazed.', 'sugar'],
     ['Chocolate Frosted', 'Thick chocolate frosting on a fluffy ring.', 'chocolate'],
     ['Glazed Donut Holes', 'Bite-size and easy to share.', 'sugar'],
   ].forEach((f, i) => add.run(f[0], f[1], f[2], i));

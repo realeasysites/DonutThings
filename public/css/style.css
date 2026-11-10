@@ -59,7 +59,7 @@ a{color:inherit}
 .flavors-head p{font-weight:700;max-width:26em}
 .box{border:4px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 10px 0 var(--ink)}
 .box-lid{background:var(--ink);padding:18px 24px;display:flex;justify-content:center}
-.box-lid img{width:210px;height:auto}
+.box-lid img{width:min(320px,80%);height:auto}
 .box-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:32px 26px;padding:32px 30px 36px;background:repeating-linear-gradient(90deg,#FFF 0 56px,#FBEFF2 56px 58px)}
 .box-empty{grid-column:1/-1;text-align:center;font-weight:700}
 .slot{flex:0 0 calc((100% - 52px)/3);text-align:center}
@@ -149,7 +149,7 @@ form .btn{justify-self:start;font-size:1.05rem}
 /* footer */
 .foot{background:var(--ink);color:var(--white);padding:38px 0}
 .foot-in{display:grid;grid-template-columns:auto 1fr auto;align-items:end;gap:14px 28px}
-.foot img{width:190px;height:auto}
+.foot img{width:240px;height:auto}
 .foot .social{align-self:center}
 .legal{grid-column:1/2;font-size:.95rem;opacity:.85}
 .credit{grid-column:3;grid-row:2;justify-self:end;font-size:.95rem}
