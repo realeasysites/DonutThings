@@ -72,6 +72,7 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
     ['Classic Glazed', 'The one everybody needs in the box.', 'sugar'],
     ['Classic Glazed Twist', 'A twisted take on the classic glazed.', 'sugar'],
     ['Chocolate Frosted', 'Thick chocolate frosting on a fluffy ring.', 'chocolate'],
+    ['Boston Cream', 'Custard-filled and topped with chocolate.', 'chocolate'],
     ['Glazed Donut Holes', 'Bite-size and easy to share.', 'sugar'],
   ].forEach((f, i) => add.run(f[0], f[1], f[2], i));
 }
