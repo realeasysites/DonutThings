@@ -1,9 +1,11 @@
-// Donut Things entrance film. Plays once per visitor; add ?intro=1 to any URL to replay.
+// Donut Things entrance film. Plays every time someone opens the site (once per browser
+// tab session, so it doesn't replay on reloads or when they come back to the homepage).
+// Add ?intro=1 to any URL to force a replay.
 (function () {
-  var KEY = 'dt-intro-seen-v3';
+  var KEY = 'dt-intro-seen-v4';
   var force = /[?&]intro=1\b/.test(location.search);
   var seen = false;
-  try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if ((seen || reduced) && !force) return;
 
@@ -40,7 +42,7 @@
   function finish() {
     if (finished) return;
     finished = true;
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
     root.classList.remove('dt-intro-open');
     wrap.classList.add('is-done');
     setTimeout(function () { video.pause(); wrap.remove(); }, 600);
