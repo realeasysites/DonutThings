@@ -66,7 +66,7 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
     ['Matcha Oreo', 'Earthy matcha meets cookies and cream.', 'oreo'],
     ['Coconut Pandan', 'Coconut with fragrant Southeast Asian pandan.', 'pandan'],
     ['Mango Tajín', 'Sweet mango with a chili-lime kick.', 'mango'],
-    ['Yuzu Honey', 'Bright Japanese citrus with honey.', 'yuzu'],
+    ['Yuzu Honey', 'Honey glaze topped with candied yuzu peel.', 'yuzu'],
     ['Banana Turon', 'Inspired by the Filipino fried banana roll.', 'turon'],
     ['Vanilla Jasmine', 'Vanilla bean glaze with floral jasmine.', 'vanilla'],
     ['Classic Glazed', 'The one everybody needs in the box.', 'sugar'],
