@@ -207,3 +207,14 @@ form .btn{justify-self:start;font-size:1.05rem}
 .fb-embed iframe{width:100%;height:620px;border:0}
 .fb-fallback{font-weight:900;padding:24px;text-align:center}
 @media (max-width:860px){.feed{padding:60px 0}.feed-grid{grid-template-columns:1fr;gap:28px}.fb-embed,.fb-embed iframe{min-height:520px;height:520px}}
+
+/* menu: donut price list + prices in the box */
+.menu-title{margin-bottom:26px}
+.drinks{padding-top:96px}
+.drink.drink-donuts{grid-column:1/-1;min-height:0;background:var(--ink);color:var(--white)}
+.donut-menu{columns:2;column-gap:48px}
+.donut-menu li{break-inside:avoid;border-color:rgba(255,255,255,.22)}
+.donut-menu li.is-out{opacity:.55}
+.drink-donuts .drink-ja{font-size:clamp(1.6rem,2.6vw,2.3rem);margin-bottom:4px}
+.slot-price{font-weight:900;margin-top:2px}
+@media (max-width:640px){.donut-menu{columns:1}}

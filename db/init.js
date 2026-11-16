@@ -77,6 +77,23 @@ if (db.prepare('SELECT COUNT(*) n FROM flavors').get().n === 0) {
   ].forEach((f, i) => add.run(f[0], f[1], f[2], i));
 }
 
+// Prices (added Nov 2026). Stored as plain text like "4.75"; blank = no price shown.
+if (!db.prepare('PRAGMA table_info(flavors)').all().some((c) => c.name === 'price')) {
+  db.exec('ALTER TABLE flavors ADD COLUMN price TEXT');
+}
+// One-time fill of the owner's Nov 16, 2026 price list. Runs once, only fills blanks,
+// so prices edited later in the dashboard are never overwritten.
+if (!db.prepare("SELECT 1 FROM settings WHERE key = 'prices_seeded_v1'").get()) {
+  const prices = {
+    'matcha oreo': '4.75', 'biscoff dragon': '6.75', 'coconut pandan': '6.50', 'mango tajín': '6.50',
+    'banana turon': '6.50', 'classic glazed': '3.25', 'chocolate frosted': '3.75', 'boston cream': '4.25',
+    'yuzu honey': '3.75', 'vanilla jasmine': '3.75', 'matcha maple bacon': '4.75',
+  };
+  const fill = db.prepare("UPDATE flavors SET price = ? WHERE lower(name) = ? AND (price IS NULL OR price = '')");
+  Object.entries(prices).forEach(([n, v]) => fill.run(v, n));
+  db.prepare("INSERT INTO settings (key, value) VALUES ('prices_seeded_v1', '1')").run();
+}
+
 // Default hours, given by the owner Nov 2026. INSERT OR IGNORE never overwrites
 // hours that were already saved in the dashboard.
 db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)').run('hours', 'Mon–Sat: 8am–2pm\nSunday: Closed');

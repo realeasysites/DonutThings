@@ -14,7 +14,7 @@ main{max-width:980px;margin:0 auto;padding:16px 18px 60px}section{display:none}s
 .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 input,select,textarea{font:inherit;padding:9px;border:1px solid #9aa;border-radius:6px;background:#fff;color:#1F1108;max-width:100%}textarea{width:100%}
 .btn{padding:9px 14px;border:0;border-radius:6px;background:#1F1108;color:#fff;font-weight:700;cursor:pointer;font-size:15px;text-decoration:none;display:inline-block}.btn.alt{background:#EE5F7E;color:#1F1108}.btn.del{background:#fff;color:#A3142F;border:2px solid #A3142F}.btn.sm{padding:6px 10px;font-size:14px}
-.fl{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:8px}.fl label{font-size:14px;font-weight:600}.fl input,.fl select{width:100%;margin-top:3px}
+.fl{display:grid;grid-template-columns:1fr 1.6fr .55fr 1fr;gap:8px}.fl label{font-size:14px;font-weight:600}.fl input,.fl select{width:100%;margin-top:3px}
 .out{display:flex;align-items:center;gap:6px;font-weight:600}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}.stat{background:#fff;border:1px solid #d7e0e0;border-radius:10px;padding:12px}.stat b{display:block;font-size:26px}
 .hint{color:#5b5047;font-size:14px;margin:4px 0 12px}.ok{color:#14704a;font-weight:700;margin-left:6px}.err{color:#A3142F;font-weight:700}
@@ -33,10 +33,10 @@ input,select,textarea{font:inherit;padding:9px;border:1px solid #9aa;border-radi
 <section id="boxes" class="on"><div id="leadList"></div></section>
 
 <section id="flavors">
-<p class="hint">Mark a flavor sold out and it shows that way on the site right away. Use the arrows to change the order.</p>
+<p class="hint">Mark a flavor sold out and it shows that way on the site right away. Prices show in the donut box and on the menu; leave a price blank to hide it. Use the arrows to change the order.</p>
 <div id="flList"></div>
 <div class="card"><h3>Add a flavor</h3>
-<div class="fl"><label>Name<input id="nName"></label><label>Short description<input id="nBlurb" maxlength="140"></label><label>Donut drawing<select id="nGlaze"></select></label></div>
+<div class="fl"><label>Name<input id="nName"></label><label>Short description<input id="nBlurb" maxlength="140"></label><label>Price<input id="nPrice" inputmode="decimal" placeholder="3.75"></label><label>Donut drawing<select id="nGlaze"></select></label></div>
 <div class="acts"><button class="btn alt" id="nAdd">Add flavor</button><span id="nMsg"></span></div></div>
 </section>
 
@@ -78,14 +78,14 @@ c.querySelector('.rm').onclick=function(){if(confirm('Delete this request? This 
 function glazeOpts(v){return glazes.map(function(g){return '<option value="'+g.key+'"'+(g.key===v?' selected':'')+'>'+esc(g.label)+'</option>'}).join('')}
 var flIds=[];
 function fl(){api('/flavors').then(function(d){glazes=d.glazes;$('nGlaze').innerHTML=glazeOpts('pink');flIds=d.flavors.map(function(f){return f.id});
-$('flList').innerHTML=d.flavors.map(function(f,i){return '<div class="card" data-id="'+f.id+'"><div class="fl"><label>Name<input class="n" value="'+esc(f.name)+'"></label><label>Short description<input class="b" maxlength="140" value="'+esc(f.blurb)+'"></label><label>Donut drawing<select class="g">'+glazeOpts(f.glaze)+'</select></label></div>'+
+$('flList').innerHTML=d.flavors.map(function(f,i){return '<div class="card" data-id="'+f.id+'"><div class="fl"><label>Name<input class="n" value="'+esc(f.name)+'"></label><label>Short description<input class="b" maxlength="140" value="'+esc(f.blurb)+'"></label><label>Price<input class="p" inputmode="decimal" placeholder="3.75" value="'+esc(f.price||'')+'"></label><label>Donut drawing<select class="g">'+glazeOpts(f.glaze)+'</select></label></div>'+
 '<div class="acts"><label class="out"><input type="checkbox" class="o"'+(f.sold_out?' checked':'')+'> Sold out today</label><button class="btn sm save">Save</button><button class="btn sm up" aria-label="Move up"'+(i?'':' disabled')+'>↑</button><button class="btn sm dn" aria-label="Move down"'+(i<d.flavors.length-1?'':' disabled')+'>↓</button><button class="btn del sm rm">Delete</button><span class="msg"></span></div></div>'}).join('');
-document.querySelectorAll('#flList .card').forEach(function(c){var id=c.dataset.id,get=function(){return{name:c.querySelector('.n').value,blurb:c.querySelector('.b').value,glaze:c.querySelector('.g').value,sold_out:c.querySelector('.o').checked}},save=function(){return api('/flavors/'+id,{method:'PUT',body:get()}).then(function(){c.querySelector('.msg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){c.querySelector('.msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+document.querySelectorAll('#flList .card').forEach(function(c){var id=c.dataset.id,get=function(){return{name:c.querySelector('.n').value,blurb:c.querySelector('.b').value,glaze:c.querySelector('.g').value,sold_out:c.querySelector('.o').checked,price:c.querySelector('.p').value}},save=function(){return api('/flavors/'+id,{method:'PUT',body:get()}).then(function(){c.querySelector('.msg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){c.querySelector('.msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
 c.querySelector('.save').onclick=save;c.querySelector('.o').onchange=save;
 c.querySelector('.rm').onclick=function(){if(confirm('Delete this flavor?'))api('/flavors/'+id,{method:'DELETE'}).then(fl)};
 function move(dir){var i=flIds.indexOf(+id),j=i+dir,t=flIds[i];flIds[i]=flIds[j];flIds[j]=t;api('/flavors/order',{method:'POST',body:{ids:flIds}}).then(fl)}
 c.querySelector('.up').onclick=function(){move(-1)};c.querySelector('.dn').onclick=function(){move(1)}})})}
-$('nAdd').onclick=function(){api('/flavors',{method:'POST',body:{name:$('nName').value,blurb:$('nBlurb').value,glaze:$('nGlaze').value}}).then(function(){$('nName').value='';$('nBlurb').value='';$('nMsg').innerHTML='<span class="ok">Added</span>';fl()}).catch(function(e){$('nMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
+$('nAdd').onclick=function(){api('/flavors',{method:'POST',body:{name:$('nName').value,blurb:$('nBlurb').value,glaze:$('nGlaze').value,price:$('nPrice').value}}).then(function(){$('nName').value='';$('nBlurb').value='';$('nPrice').value='';$('nMsg').innerHTML='<span class="ok">Added</span>';fl()}).catch(function(e){$('nMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};
 
 function info(){api('/settings').then(function(s){$('sHours').value=s.hours||'';$('sNotice').value=s.notice||'';$('sIg').value=s.instagram_url||''})}
 $('sSave').onclick=function(){api('/settings',{method:'PUT',body:{hours:$('sHours').value,notice:$('sNotice').value,instagram_url:$('sIg').value}}).then(function(){$('sMsg').innerHTML='<span class="ok">Saved</span>'}).catch(function(e){$('sMsg').innerHTML='<span class="err">'+esc(e.message)+'</span>'})};

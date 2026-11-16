@@ -78,7 +78,14 @@ const cleanFlavor = (b) => ({
   blurb: String(b.blurb || '').trim().slice(0, 140),
   glaze: GLAZES[b.glaze] ? b.glaze : 'pink',
   sold_out: b.sold_out ? 1 : 0,
+  price: cleanPrice(b.price),
 });
+
+// "$4.75", "4.75", "4.5" -> "4.75" / "4.50"; anything else -> '' (no price shown)
+function cleanPrice(v) {
+  const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, ''));
+  return Number.isFinite(n) && n > 0 && n < 1000 ? n.toFixed(2) : '';
+}
 
 api.get('/flavors', (req, res) => {
   res.json({
@@ -91,14 +98,14 @@ api.post('/flavors', (req, res) => {
   const f = cleanFlavor(req.body || {});
   if (!f.name) return res.status(400).json({ error: 'Add a flavor name.' });
   const sort = db.prepare('SELECT COALESCE(MAX(sort), 0) + 1 n FROM flavors').get().n;
-  const r = db.prepare('INSERT INTO flavors (name, blurb, glaze, sold_out, sort) VALUES (?,?,?,?,?)').run(f.name, f.blurb, f.glaze, f.sold_out, sort);
+  const r = db.prepare('INSERT INTO flavors (name, blurb, glaze, sold_out, sort, price) VALUES (?,?,?,?,?,?)').run(f.name, f.blurb, f.glaze, f.sold_out, sort, f.price);
   res.json({ ok: true, id: r.lastInsertRowid });
 });
 
 api.put('/flavors/:id', (req, res) => {
   const f = cleanFlavor(req.body || {});
   if (!f.name) return res.status(400).json({ error: 'Add a flavor name.' });
-  const r = db.prepare('UPDATE flavors SET name=?, blurb=?, glaze=?, sold_out=? WHERE id=?').run(f.name, f.blurb, f.glaze, f.sold_out, Number(req.params.id));
+  const r = db.prepare('UPDATE flavors SET name=?, blurb=?, glaze=?, sold_out=?, price=? WHERE id=?').run(f.name, f.blurb, f.glaze, f.sold_out, f.price, Number(req.params.id));
   res.json({ ok: r.changes > 0 });
 });
 
