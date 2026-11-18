@@ -94,6 +94,14 @@ if (!db.prepare("SELECT 1 FROM settings WHERE key = 'prices_seeded_v1'").get()) 
   db.prepare("INSERT INTO settings (key, value) VALUES ('prices_seeded_v1', '1')").run();
 }
 
+// Nov 18, 2026: owner's prices for the last two donuts. Same rules: once, blanks only.
+if (!db.prepare("SELECT 1 FROM settings WHERE key = 'prices_seeded_v2'").get()) {
+  const fill = db.prepare("UPDATE flavors SET price = ? WHERE lower(name) = ? AND (price IS NULL OR price = '')");
+  fill.run('3.25', 'classic glazed twist');
+  fill.run('3.25', 'glazed donut holes');
+  db.prepare("INSERT INTO settings (key, value) VALUES ('prices_seeded_v2', '1')").run();
+}
+
 // Default hours, given by the owner Nov 2026. INSERT OR IGNORE never overwrites
 // hours that were already saved in the dashboard.
 db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)').run('hours', 'Mon–Sat: 8am–2pm\nSunday: Closed');
